@@ -1,23 +1,21 @@
 import mongoose from "mongoose";
 
-const userSchema = mongoose.Schema({
-    clerkId: {
-        type: String,
-        required: true,
-        unique: true,
-    },
-    name: {
+const communityPostSchema = mongoose.Schema({
+    title: {
         type: String,
         required: true,
     },
-    email: {
+    content: {
         type: String,
         required: true,
-        unique: true,
-    }, 
+    },
+    userId: {
+        type: String,
+        required: true,
+    }
 },
 {
     timestamps: true,
 });
 
-export const User = mongoose.model("User", userSchema);
+export const CommunityPost = mongoose.model("CommunityPost", communityPostSchema);
