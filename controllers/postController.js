@@ -1,5 +1,6 @@
 import { CommunityPost } from "../model/communityPost.js";
 import { CommentModel } from "../model/commentModel.js";
+import { User } from "../model/userModel.js";
 
 import { z } from "zod";
 
@@ -7,6 +8,7 @@ const postSchema = z.object({
     title: z.string().min(1, 'Title is required'),
     content: z.string().min(1, 'Content is required'),
     userId: z.string(),
+    type: z.string().optional(),
 });
 
 const commentSchema = z.object({
@@ -27,13 +29,14 @@ export const createPost = async (req, res) => {
         });
     }
 
-    const { title, content, userId } = req.body;
+    const { title, content, userId, type } = req.body;
 
     try {
         const post = await CommunityPost.create({
             title,
             content,
             userId,
+            type,
         });
 
         if (post) {
@@ -110,3 +113,4 @@ export const getCommentsByPostId = async (req, res) => {
         res.status(500).json({ error: 'Server error' });
     }
 }
+
