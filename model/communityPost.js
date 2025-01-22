@@ -12,7 +12,23 @@ const communityPostSchema = mongoose.Schema({
     userId: {
         type: String,
         required: true,
-    }
+    },
+    type: {
+        type: String,
+        required: true,
+        enum: [
+            "Help",
+            "Tips",
+            "DIY",
+            "Organic",
+            "Identification",
+            "Inspiration",
+            "Projects",
+            "General",
+        ],
+        default: "General",
+    },
+
 },
 {
     timestamps: true,
