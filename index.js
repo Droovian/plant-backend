@@ -5,7 +5,7 @@ import userRoutes from './routes/users.js';
 import imageRoutes from './routes/images.js';
 import layoutRoutes from './routes/layout.js';
 import communityRoutes from './routes/community.js';
-
+import plantRoutes from './routes/plants.js';
 import { errorHandler } from './middleware/errorMiddleware.js';
 import { connectDB } from './config/db.js';
 
@@ -20,6 +20,7 @@ app.use(express.urlencoded({ extended: false }));
 
 app.use('/api/user', userRoutes);
 app.use('/api/community', communityRoutes);
+app.use('/api/plant', plantRoutes);
 app.use('/api/layout', layoutRoutes);
 app.use('/api/images/upload', imageRoutes);
 app.use(errorHandler);
