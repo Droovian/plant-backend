@@ -19,7 +19,7 @@ const commentSchema = z.object({
 
 export const createPost = async (req, res) => {
     
-    console.log('hit the server');
+    // console.log('hit the server');
     
     const parseResult = postSchema.safeParse(req.body);
 
@@ -114,3 +114,17 @@ export const getCommentsByPostId = async (req, res) => {
     }
 }
 
+export const deletePostById = async (req, res) => {
+    try {
+        const post = await CommunityPost.findById(req.params.id);
+        if (post) {
+            await post.deleteOne();
+            res.status(200).json({ message: 'Post removed' });
+        } else {
+            res.status(404).json({ error: 'Post not found' });
+        }
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: 'Server error' });
+    }
+}

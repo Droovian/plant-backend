@@ -1,0 +1,16 @@
+version: '3.8'
+
+services:
+  app:
+    build: .
+    container_name: plant-backend
+    restart: always
+    ports:
+      - "3000:3000"
+    env_file:
+      - .env  # Load variables from .env file
+    volumes:
+      - .:/app   
+      - /app/node_modules  
+    command: npm run dev  
+    working_dir: /app   

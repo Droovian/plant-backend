@@ -8,11 +8,13 @@ import communityRoutes from './routes/community.js';
 import plantRoutes from './routes/plants.js';
 import { errorHandler } from './middleware/errorMiddleware.js';
 import { connectDB } from './config/db.js';
+import { requireAuth } from '@clerk/express';
 
 dotenv.config();
 connectDB();
 const app = express();
 app.use(cors());
+
 const port = process.env.PORT;
 
 app.use(express.json());
@@ -23,6 +25,7 @@ app.use('/api/community', communityRoutes);
 app.use('/api/plant', plantRoutes);
 app.use('/api/layout', layoutRoutes);
 app.use('/api/images/upload', imageRoutes);
+
 app.use(errorHandler);
 
 app.listen(port, () => {
