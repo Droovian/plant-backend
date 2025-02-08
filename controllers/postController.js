@@ -48,31 +48,27 @@ export const createPost = async (req, res) => {
 
 export const getAllPosts = async (req, res) => {
     try {
-        let cachedPosts = null;
-        try {
-            cachedPosts = await client.get('posts');
-        } catch (redisError) {
-            console.error("Redis error (fallback to DB):", redisError.message);
-        }
+        // Try getting cached posts from Redis
+        const cachedPosts = await client.json.get('posts');
 
         if (cachedPosts) {
-            console.log("✅ Cached posts retrieved from Redis:", cachedPosts);
-            return res.status(200).json(JSON.parse(cachedPosts));
+            return res.status(200).json(cachedPosts);
         }
 
-        const posts = await CommunityPost.find();
-        try {
-            await client.set('posts', JSON.stringify(posts), { EX: 3600 });
-        } catch (redisError) {
-            console.error("Redis error (could not cache):", redisError.message);
+        const posts = await CommunityPost.find().lean();
+
+        if (posts.length > 0) {
+            await client.json.set('posts', '$', posts);
+            await client.expire('posts', 3600);
         }
 
         res.status(200).json(posts);
     } catch (error) {
-        console.error(error);
-        res.status(500).json({ error: 'Server error' });
+        console.error("Error fetching posts:", error);
+        res.status(500).json({ error: "Server error" });
     }
 };
+
 
 export const getPostById = async (req, res) => {
     try {
@@ -90,6 +86,7 @@ export const getPostById = async (req, res) => {
 
 export const addComment = async (req, res) => {
     const parseResult = commentSchema.safeParse(req.body);
+    
     if (!parseResult.success) {
         return res.status(400).json({
             error: parseResult.error.errors.map(err => err.message).join(', '),
@@ -125,18 +122,19 @@ export const getCommentsByPostId = async (req, res) => {
     try {
         let cachedComments = null;
         try {
-            cachedComments = await client.get(cacheKey);
+            cachedComments = await client.json.get(cacheKey);
         } catch (redisError) {
             console.error("Redis error (fallback to DB):", redisError.message);
         }
 
         if (cachedComments) {
-            return res.status(200).json(JSON.parse(cachedComments));
+            return res.status(200).json(cachedComments);
         }
 
         const comments = await CommentModel.find({ postId });
         try {
-            await client.set(cacheKey, JSON.stringify(comments), { EX: 3600 });
+            await client.json.set(cacheKey, '$', comments);
+            await client.expire(cacheKey, 3600);
         } catch (redisError) {
             console.error("Redis error (could not cache):", redisError.message);
         }

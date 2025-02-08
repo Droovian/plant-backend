@@ -1,5 +1,6 @@
 import { z } from "zod";
 import { PlantModel } from "../model/plantModel.js";
+import client from "../redis/client.js";
 
 const plantSchema = z.object({
     common_name: z.string().min(1, "Common name is required."),
@@ -85,33 +86,58 @@ export const addPlant = async (req, res) => {
 
 export const showAllPlants = async (req, res) => {
     try {
+        // Check Redis cache
+        const cachedPlants = await client.json.get('plants');
 
-        const cachedPlants = await client.get('plants');
-
-        if(cachedPlants){
-            return res.status(200).json(JSON.parse(cachedPlants));
+        if (cachedPlants) {
+            return res.status(200).json(cachedPlants);
         }
 
-        const plants = await PlantModel.find();
-        await client.set('plants', JSON.stringify(plants));
-        
+        // Fetch from DB
+        const plants = await PlantModel.find().lean(); // Ensure plain JSON
+        await client.json.set('plants', '$', plants); // Store as JSON
+        await client.expire('plants', 3600); // Set expiration separately
+
         res.status(200).json(plants);
     } catch (error) {
+        console.error("Error fetching plants:", error);
         return res.status(500).json({
             message: "An error occurred while fetching plants",
             error: error.message,
         });
     }
-}
+};
+
 
 export const showPlantById = async (req, res) => {
+
+    const { id: plantId } = req.params;
+    const plantCacheKey = `plant:${plantId}`;
+
     try {
-        const plant = await PlantModel.findById(req.params.id);
-        if (plant) {
-            res.status(200).json(plant);
-        } else {
-            res.status(404).json({ message: "Plant not found" });
+        let cachedPlant = null;
+
+        try{
+            cachedPlant = await client.json.get(plantCacheKey);
         }
+        catch(redisError){
+            console.error("Redis error (fallback to DB):", redisError.message);
+        }
+        if(cachedPlant){
+            return res.status(200).json(cachedPlant);
+        }
+
+        const plant = await PlantModel.findById(plantId).lean();
+
+        try{
+            await client.json.set(plantCacheKey, '$', plant);
+            await client.expire(plantCacheKey, 3600);
+        }
+        catch(redisError){
+            console.error("Redis error (could not cache):", redisError.message);
+        }
+
+        res.status(200).json(plant);
     } catch (error) {
         return res.status(500).json({
             message: "An error occurred while fetching plant",
