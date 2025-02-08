@@ -85,7 +85,16 @@ export const addPlant = async (req, res) => {
 
 export const showAllPlants = async (req, res) => {
     try {
+
+        const cachedPlants = await client.get('plants');
+
+        if(cachedPlants){
+            return res.status(200).json(JSON.parse(cachedPlants));
+        }
+
         const plants = await PlantModel.find();
+        await client.set('plants', JSON.stringify(plants));
+        
         res.status(200).json(plants);
     } catch (error) {
         return res.status(500).json({
