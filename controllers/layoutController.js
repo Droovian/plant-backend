@@ -1,31 +1,5 @@
 import { z } from "zod";
 import { GardenLayout } from "../model/layoutModel.js";
-/*
-interface GardenLayout {
-  id?: string;
-  name: string;
-  rows: number;
-  columns: number;
-  cellSize: number;
-  unit: 'feet' | 'meters';
-  cells: GridCell[];
-  userId: string;
-}
-*/
-
-const layoutSchema = z.object({
-    name: z.string().min(1, 'Name is required'),
-    rows: z.number().int().min(1, 'Rows must be at least 1'),
-    columns: z.number().int().min(1, 'Columns must be at least 1'),
-    cellSize: z.number().int().min(1, 'Cell size must be at least 1'),
-    unit: z.enum(['feet', 'meters']),
-    cells: z.array(z.object({
-        row: z.number().int().min(0, 'Row must be at least 0'),
-        column: z.number().int().min(0, 'Column must be at least 0'),
-        plant: z.string().min(1, 'Plant name is required'),
-    })),
-    userId: z.string(),
-});
 
 export const createLayout = async (req, res) => {
 
