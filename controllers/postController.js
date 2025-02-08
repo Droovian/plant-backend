@@ -56,6 +56,7 @@ export const getAllPosts = async (req, res) => {
         }
 
         if (cachedPosts) {
+            console.log("✅ Cached posts retrieved from Redis:", cachedPosts);
             return res.status(200).json(JSON.parse(cachedPosts));
         }
 
