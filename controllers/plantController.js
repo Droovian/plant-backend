@@ -97,7 +97,7 @@ export const updatePlantDeets = async (req, res) => {
         //     });
         // }
 
-        const updatedPlant = await PlantModel.findByIdAndUpdate(req.params.id, req.body, { new: true });
+        const updatedPlant = await PlantModel.findByIdAndUpdate(req.params.id, { $set: req.body }, { new: true, runValidators: true });
 
         if (updatedPlant) {
             res.status(200).json(updatedPlant);
