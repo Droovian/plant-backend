@@ -74,3 +74,18 @@ export const userSchema = z.object({
     name: z.string(),
     email: z.string().email(),
 });
+
+export const layoutSchemaZod = z.object({
+  userId: z.string(),
+  grid: z.object({
+    rows: z.array(
+      z.array(
+        z.object({
+          plantName: z.string().default(""),
+        })
+      )
+    ),
+  }),
+  width: z.number().int().positive(),
+  height: z.number().int().positive(),
+});
