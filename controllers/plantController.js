@@ -41,21 +41,44 @@ export const showAllPlants = async (req, res) => {
         
         res.status(200).json(plants);
     } catch (error) {
+        console.error("Error fetching plants:", error);
         return res.status(500).json({
             message: "An error occurred while fetching plants",
             error: error.message,
         });
     }
-}
+};
+
 
 export const showPlantById = async (req, res) => {
+
+    const { id: plantId } = req.params;
+    // const plantCacheKey = `plant:${plantId}`;
+
     try {
-        const plant = await PlantModel.findById(req.params.id);
-        if (plant) {
-            res.status(200).json(plant);
-        } else {
-            res.status(404).json({ message: "Plant not found" });
-        }
+        // let cachedPlant = null;
+
+        // try{
+        //     cachedPlant = await client.json.get(plantCacheKey);
+        // }
+        // catch(redisError){
+        //     console.error("Redis error (fallback to DB):", redisError.message);
+        // }
+        // if(cachedPlant){
+        //     return res.status(200).json(cachedPlant);
+        // }
+
+        const plant = await PlantModel.findById(plantId);
+
+        // try{
+        //     await client.json.set(plantCacheKey, '$', plant);
+        //     await client.expire(plantCacheKey, 3600);
+        // }
+        // catch(redisError){
+        //     console.error("Redis error (could not cache):", redisError.message);
+        // }
+
+        res.status(200).json(plant);
     } catch (error) {
         return res.status(500).json({
             message: "An error occurred while fetching plant",
@@ -66,15 +89,15 @@ export const showPlantById = async (req, res) => {
 
 export const updatePlantDeets = async (req, res) => {
     try {
-        const parsedPlant = plantSchema.safeParse(req.body);
+        // const parsedPlant = plantSchema.safeParse(req.body);
 
-        if (!parsedPlant.success) {
-            return res.status(400).json({
-                error: parsedPlant.error.errors.map((err) => err.message).join(", "),
-            });
-        }
+        // if (!parsedPlant.success) {
+        //     return res.status(400).json({
+        //         error: parsedPlant.error.errors.map((err) => err.message).join(", "),
+        //     });
+        // }
 
-        const updatedPlant = await PlantModel.findByIdAndUpdate(req.params.id, req.body, { new: true });
+        const updatedPlant = await PlantModel.findByIdAndUpdate(req.params.id, { $set: req.body }, { new: true, runValidators: true });
 
         if (updatedPlant) {
             res.status(200).json(updatedPlant);

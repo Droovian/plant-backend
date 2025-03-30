@@ -51,10 +51,11 @@ export const getAllPosts = async (req, res) => {
             totalPosts
         });
     } catch (error) {
-        console.error(error);
-        res.status(500).json({ error: 'Server error' });
+        console.error("Error fetching posts:", error);
+        res.status(500).json({ error: "Server error" });
     }
 };
+
 
 export const getPostById = async (req, res) => {
     try {
@@ -72,6 +73,7 @@ export const getPostById = async (req, res) => {
 
 export const addComment = async (req, res) => {
     const parseResult = commentSchema.safeParse(req.body);
+    
     if (!parseResult.success) {
         return res.status(400).json({
             error: parseResult.error.errors.map(err => err.message).join(', '),
