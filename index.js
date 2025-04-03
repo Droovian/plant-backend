@@ -9,6 +9,7 @@ import layoutRoutes from './routes/layout.js';
 import { errorHandler } from './middleware/errorMiddleware.js';
 import { connectDB } from './config/db.js';
 import { requireAuth } from '@clerk/express';
+import wateringHistoryRoutes from './routes/wateringHistory.js';
 
 dotenv.config();
 connectDB();
@@ -25,6 +26,7 @@ app.use('/api/community', communityRoutes);
 app.use('/api/layout', layoutRoutes);
 app.use('/api/plant', plantRoutes);
 app.use('/api/images/upload', imageRoutes);
+app.use('/api/watering-history', wateringHistoryRoutes);
 
 app.use(errorHandler);
 
