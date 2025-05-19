@@ -18,6 +18,11 @@ const userSchema = mongoose.Schema({
     points: {
         type: Number,
         default: 0,
+    },
+    token:{
+        type: String,
+        default: null,
+        optional: true,
     }
 },
 {
