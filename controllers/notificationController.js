@@ -28,7 +28,6 @@ export const createNotification = async (req, res) => {
             token,
             title,
             body,
-            data,
             timestamp: new Date(),
         });
 
