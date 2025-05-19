@@ -5,10 +5,6 @@ const notificationSchema = new mongoose.Schema({
         type: String,
         required: true,
     },
-    nameOfAnimal: {
-        type: String,
-        required: true,
-    },
     timestamp: {
         type: Date,
         required: true,

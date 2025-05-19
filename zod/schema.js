@@ -122,7 +122,6 @@ export const layoutSchemaZod = z.object({
 
 export const notificationSchema = z.object({
   imageUrl: z.string().url(),
-  nameOfAnimal: z.string(),
   timestamp: z.date().optional(),
   token: z.string(),
   title: z.string(),
