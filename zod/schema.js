@@ -102,6 +102,7 @@ export const userSchema = z.object({
     clerkId: z.string(),
     name: z.string(),
     email: z.string().email(),
+    token: z.string().optional(),
 });
 
 export const layoutSchemaZod = z.object({
@@ -117,4 +118,13 @@ export const layoutSchemaZod = z.object({
   }),
   width: z.number().int().positive(),
   height: z.number().int().positive(),
+});
+
+export const notificationSchema = z.object({
+  imageUrl: z.string().url(),
+  nameOfAnimal: z.string(),
+  timestamp: z.date().optional(),
+  token: z.string(),
+  title: z.string(),
+  body: z.string(),
 });

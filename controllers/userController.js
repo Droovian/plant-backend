@@ -3,7 +3,7 @@ import { User } from "../model/userModel.js";
 import { userSchema } from '../zod/schema.js';
 
 export const registerUser = async (req, res) => {
-    const { clerkId, name, email } = req.body;
+    const { clerkId, name, email, token } = req.body;
 
     console.log(req.body);
     
@@ -17,6 +17,7 @@ export const registerUser = async (req, res) => {
             clerkId,
             name,
             email,
+            token
         });
 
         await user.save();
