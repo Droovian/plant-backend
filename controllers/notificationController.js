@@ -1,4 +1,5 @@
 import Notification from '../model/notificationModel.js';
+import User from '../model/userModel.js';
 
 export const createNotification = async (req, res) => {
     try {
@@ -49,13 +50,26 @@ export const getAllNotifications = async (req, res) => {
 
 export const getNotificationById = async (req, res) => {
     try {
-        const notification = await Notification.findById(req.params.id);
+        // Fetch the user by ID
+        const user = await User.findById(req.params.id);
+
+        if (!user) {
+            return res.status(404).json({ message: 'User not found' });
+        }
+
+        // Assuming user.expoToken holds the token you want to match with in notifications
+        const notification = await Notification.findOne({ token: user.token });
+
         if (!notification) {
             return res.status(404).json({ message: 'Notification not found' });
         }
+
         res.status(200).json(notification);
     } catch (error) {
         res.status(500).json({ message: 'Failed to fetch notification', error: error.message });
     }
 };
+
+
+
 
