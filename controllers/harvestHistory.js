@@ -13,11 +13,12 @@ export const getHarvestHistoryByLayout = async (req, res) => {
 
 // Create a new harvest record
 export const createHarvest = async (req, res) => {
+   
   try {
     const { layoutId, userId, plantName, date } = req.body;
-    if (userId !== req.userId) {
-      return res.status(403).json({ message: 'Unauthorized' });
-    }
+    // if (userId !== req.userId) {
+    //   return res.status(403).json({ message: 'Unauthorized' });
+    // }
     if (!plantName || !date) {
       return res.status(400).json({ message: 'Plant name and date are required' });
     }

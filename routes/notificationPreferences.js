@@ -6,7 +6,7 @@ import {
 
 const router = express.Router();
 
-router.get('/', getNotificationPreferences);
-router.post('/', saveNotificationPreferences);
+router.get('/:userId', getNotificationPreferences);
+router.post('/:userId', saveNotificationPreferences);
 
 export default router;

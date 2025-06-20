@@ -3,10 +3,18 @@ import { Task } from "../model/Task.js";
 // Get all tasks for a layout
 export const getTasksByLayout = async (req, res) => {
   try {
-    const tasks = await Task.find({ layoutId: req.params.layoutId, userId: req.userId });
+    const { layoutId } = req.params;
+    const { userId } = req.query; // Use query parameter for userId
+    console.log('Fetching tasks for layout:', layoutId, 'user:', userId);
+
+    if (!layoutId || !userId) {
+      return res.status(400).json({ message: 'Layout ID and User ID are required' });
+    }
+
+    const tasks = await Task.find({ layoutId, userId });
     res.json(tasks);
   } catch (error) {
-    console.error('Error fetching tasks:', error);
+    console.error('Error fetching tasks:',error);
     res.status(500).json({ message: 'Server error' });
   }
 };
@@ -15,9 +23,7 @@ export const getTasksByLayout = async (req, res) => {
 export const createTask = async (req, res) => {
   try {
     const { layoutId, userId, description } = req.body;
-    if (userId !== req.userId) {
-      return res.status(403).json({ message: 'Unauthorized' });
-    }
+    
     if (!description || !description.trim()) {
       return res.status(400).json({ message: 'Task description is required' });
     }
@@ -33,11 +39,20 @@ export const createTask = async (req, res) => {
 // Update task completion status
 export const updateTask = async (req, res) => {
   try {
-    const task = await Task.findOne({ _id: req.params.id, userId: req.userId });
+    const { id } = req.params;
+    const { userId, completed } = req.body; // Require userId in body
+    console.log('Updating task:', id, 'for user:', userId);
+
+    if (!id || !userId) {
+      return res.status(400).json({ message: 'Task ID and User ID are required' });
+    }
+
+    const task = await Task.findOne({ _id: id, userId });
     if (!task) {
       return res.status(404).json({ message: 'Task not found or unauthorized' });
     }
-    task.completed = req.body.completed;
+
+    task.completed = completed;
     await task.save();
     res.json(task);
   } catch (error) {
@@ -49,12 +64,21 @@ export const updateTask = async (req, res) => {
 // Delete a task
 export const deleteTask = async (req, res) => {
   try {
-    const task = await Task.findOneAndDelete({ _id: req.params.id, userId: req.userId });
+    const { taskId } = req.params;
+    const { userId } = req.body; // Require userId in body
+    console.log('Deleting task with ID:', taskId, 'for user:', userId);
+
+    if (!taskId || !userId) {
+      return res.status(400).json({ message: 'Task ID and User ID are required' });
+    }
+
+    const task = await Task.findOneAndDelete({ _id: taskId, userId });
     if (!task) {
       return res.status(404).json({ message: 'Task not found or unauthorized' });
     }
+
     res.json({ message: 'Task deleted' });
-  } catch (error) {
+  } catch ( error) {
     console.error('Error deleting task:', error);
     res.status(500).json({ message: 'Server error' });
   }
