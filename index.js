@@ -10,8 +10,9 @@ import { errorHandler } from './middleware/errorMiddleware.js';
 import { connectDB } from './config/db.js';
 import wateringHistoryRoutes from './routes/wateringHistory.js';
 import notificationRoutes from './routes/notification.js';
+import harvestHistoryRoutes from './routes/harvestHistory.js';
 import taskRoutes from './routes/task.js';
-
+import notificationPreferencesRoutes from './routes/notificationPreferences.js';
 dotenv.config();
 connectDB();
 const app = express();
@@ -29,7 +30,9 @@ app.use('/api/plant', plantRoutes);
 app.use('/api/images/upload', imageRoutes);
 app.use('/api/watering-history', wateringHistoryRoutes);
 app.use('/api/notification', notificationRoutes);
+app.use('/api/harvest-history', harvestHistoryRoutes);
 app.use('/api/tasks', taskRoutes);
+app.use('/api/notification-preferences', notificationPreferencesRoutes);
 
 app.use(errorHandler);
 

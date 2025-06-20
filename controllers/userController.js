@@ -1,6 +1,4 @@
-import { z } from 'zod';
 import { User } from "../model/userModel.js";
-import { userSchema } from '../zod/schema.js';
 
 export const registerUser = async (req, res) => {
     const { clerkId, name, email, token } = req.body;

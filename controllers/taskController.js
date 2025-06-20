@@ -1,4 +1,4 @@
-import Task from '../models/Task';
+import { Task } from "../model/Task.js";
 
 // Get all tasks for a layout
 export const getTasksByLayout = async (req, res) => {
