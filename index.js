@@ -10,6 +10,7 @@ import { errorHandler } from './middleware/errorMiddleware.js';
 import { connectDB } from './config/db.js';
 import wateringHistoryRoutes from './routes/wateringHistory.js';
 import notificationRoutes from './routes/notification.js';
+import taskRoutes from './routes/task.js';
 
 dotenv.config();
 connectDB();
@@ -28,6 +29,7 @@ app.use('/api/plant', plantRoutes);
 app.use('/api/images/upload', imageRoutes);
 app.use('/api/watering-history', wateringHistoryRoutes);
 app.use('/api/notification', notificationRoutes);
+app.use('/api/tasks', taskRoutes);
 
 app.use(errorHandler);
 
