@@ -51,9 +51,9 @@ export const getNotificationById = async (req, res) => {
     try {
         const notification = await Notification.findOne({ userId: req.params.id });
         if (!notification) {
-            return res.status(404).json({ message: 'Notification not found' });
+            return res.status(200).json([]); // Return empty array instead of 404
         }
-        res.status(200).json(notification);
+        res.status(200).json([notification]); // Return notification wrapped in array for consistency
     } catch (error) {
         res.status(500).json({ message: 'Failed to fetch notification', error: error.message });
     }
