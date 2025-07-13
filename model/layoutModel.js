@@ -30,6 +30,10 @@ const layoutSchema = new mongoose.Schema(
       type: Number,
       required: true,
     },
+    city: {
+      type: String,
+      default: "",
+    },
   },
   {
     timestamps: true,
