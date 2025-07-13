@@ -118,7 +118,6 @@ export const layoutSchemaZod = z.object({
   }),
   width: z.number().int().positive(),
   height: z.number().int().positive(),
-  city: z.string().optional(),
 });
 
 export const notificationSchema = z.object({
